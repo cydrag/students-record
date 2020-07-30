@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pocetna</title>
+    <script src="http://127.0.0.1:5000/js/jquery.js"></script>
+    <link rel="stylesheet" href="/css/navigator.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script>
+
+        let studenti;
+
+        function prikazi(students) {
+            $("#prikaz").html("");
+
+            if (students.length == 0) {
+                $("#prikaz").html("<h1>Ne postoji nijedan student sa oznacenim filterima</h1>");
+            }
+            else {
+                let htmlText = `<table>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ime</th>
+                                        <th>Prezime</th>
+                                        <th>Smer</th>
+                                        <th>Godina Upisa</th>
+                                        <th>Polozeni predmeti</th>
+                                        <th>Uredjivanje</th>
+                                    </tr>`;
+
+                for (let student of students) {
+                    htmlText += `<tr>`;
+                    htmlText += `<td><strong>${student.id}</strong></td>`;
+                    htmlText += `<td>${student.ime}</td>`;
+                    htmlText += `<td>${student.prezime}</td>`;
+                    htmlText += `<td>${student.smer}</td>`;
+                    htmlText += `<td>${student.godinaUpisa}</td>`;
+
+                    htmlText += `<td><ol>`;
+                    for (let predmet of student.polozeniPredmeti) {
+                        htmlText += `<li>${predmet.naziv} (${predmet.profesor}) - Broj ESPB: ${predmet.brEspb}</li>`;
+                    }
+                    htmlText += `</ol></td>`;
+                    htmlText += `<td><a href='/izmeniStudenta/${student.id}'>Uredi</a></td>`;
+                    htmlText += `</tr>`;
+                }
+
+                htmlText += `</table>`;
+
+                $("#prikaz").html(htmlText);
+            }
+        }
+
+        function filtriraj() {
+            let filtersID = document.getElementsByName("filterID");
+            let filterID;
+            for (let filter of filtersID) {
+                if (filter.checked) {
+                    filterID = filter.value;
+                    break;
+                }
+            }
+
+            let filterIme = $("#ime").val().trim();
+            let filterPrezime = $("#prezime").val().trim();
+            let filterSmer = $("#filterSmer").val();
+            let filterBrojPredmeta = $("#filterBrojPredmeta").val();
+            let filterGodina = $("#filterGodina").val();
+
+            let data = {
+                "filterID": filterID,
+                "filterIme": filterIme,
+                "filterPrezime": filterPrezime,
+                "filterSmer": filterSmer,
+                "filterGodina": filterGodina,
+                "filterBrojPredmeta": filterBrojPredmeta
+            };
+
+            $.ajax({
+                url: "/api/filter",
+                method: "post",
+                data: data,
+                success: function(response) {
+                    studenti = JSON.parse(response);
+                    prikazi(studenti);
+                }
+            });
+        }
+
+        $(function() {
+            $.ajax({
+                url: "/api/getStudenti",
+                method: "post",
+                success: function(response) {
+                    studenti = JSON.parse(response);
+                }
+            });
+
+            let filteri = document.getElementsByClassName("filteri");
+
+            for (let filter of filteri) {
+                filter.addEventListener("change", filtriraj);
+            }
+
+        });
+
+    </script>
+</head>
+<body>
+    <ul>
+        <li><a class="active" href="/">Pocetna</a></li>
+        <li><a href="/dodajStudenta">Dodaj studenta</a></li>
+    </ul>
+    <div id="filteri">
+        <h2>FILTERI</h2>
+        <label>ID:</label><br>
+        <label>Rastuce</label>
+        <input name="filterID" type="radio" value="asc" class="filteri" checked>
+        <label>Opadajuce</label>
+        <input name="filterID" type="radio" value="desc" class="filteri"><br><br>
+
+        Ime: <input type="text" id="ime" class="filteri">
+        Prezime: <input type="text" id="prezime" class="filteri">
+        <br><br>
+
+        <label for="filterSmer">Smer: </label>
+        <select id="filterSmer" name="filterSmer" class="filteri">
+            <option value="0">Svi smerovi</option>
+            {{#if filterSmer}}
+                {{#each filterSmer}}
+                    <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            {{/if}}
+        </select>
+        <br><br>
+
+        <label for="filterGodina">Godina upisa na studije:</label>
+        <input type="number" id="filterGodina" class="filteri" min="2000" style="width: 60px;">
+        <br><br>
+
+        <label for="filterBrojPredmeta">Broj polozenih predmeta:</label>
+        <input type="number" id="filterBrojPredmeta" class="filteri" min="0" max="70" style="width: 35px;">
+    </div>
+    <section id="prikaz">
+        {{#if studenti}}
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Ime</th>
+                <th>Prezime</th>
+                <th>Smer</th>
+                <th>Godina Upisa</th>
+                <th>Polozeni predmeti</th>
+                <th>Uredjivanje</th>
+            </tr>
+            {{#each studenti}}
+                <tr>
+                    <td><strong>{{this.id}}</strong></td>
+                    <td>{{this.ime}}</td>
+                    <td>{{this.prezime}}</td>
+                    <td>{{this.smer}}</td>
+                    <td>{{this.godinaUpisa}}</td>
+                    <td>
+                        <ol>
+                            {{#each this.polozeniPredmeti}}
+                                <li>{{this.naziv}} ({{this.profesor}}) - Broj ESPB: {{this.brEspb}}</li>
+                            {{/each}}
+                        </ol>
+                    </td>
+                    <td><a href="/izmeniStudenta/{{this.id}}">Uredi</a></td>
+                </tr>
+            {{/each}}
+        </table>
+        {{else}}
+            <h1>Nije ucitan nijedan student</h1>
+        {{/if}}
+    </section>
+</body>
+</html>

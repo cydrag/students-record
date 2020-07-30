@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pocetna</title>
+    <script src="http://127.0.0.1:5000/js/jquery.js"></script>
+    <link rel="stylesheet" href="/css/navigator.css">
+    <style>
+        #forma {
+            margin-top: 40px;
+        }
+    </style>
+    <script>
+        $(function() {
+
+            $("#dodajStudenta").click(function() {
+                let ID = {{najveciID}};
+                let ime = $("#ime").val();
+                let prezime = $("#prezime").val();
+                let smer = $("#smer").val();
+                let godinaUpisa = parseInt($("#godinaUpisa").val());
+
+                if ((ime != "") && (prezime != "") && (!isNaN(godinaUpisa))) {
+                    let noviStudent = {
+                        "id": ID,
+                        "ime": ime,
+                        "prezime": prezime,
+                        "smer": smer,
+                        "godinaUpisa": godinaUpisa,
+                        "polozeniPredmeti": []
+                    };
+
+                    let nov = JSON.stringify(noviStudent);
+
+                    $.ajax({
+                        url: "/api/dodavanje",
+                        method: "post",
+                        data: {"student": nov},
+                        success: function(response) {
+                            alert(response);
+                            location.assign("/");
+                        }
+                    });
+
+                }
+                else {
+                    $("#status").html(`<span style="color: red;">Neuspesno dodavanje studenta</span>`);
+                }
+
+            });
+        });
+    </script>
+</head>
+<body>
+<ul>
+    <li><a href="/">Pocetna</a></li>
+    <li><a class="active" href="/dodajStudenta">Dodaj studenta</a></li>
+</ul>
+<section id="forma">
+
+    <form method="post">
+        <p>ID: {{najveciID}}</p>
+        <label for="ime">Ime: </label>
+        <input type="text" id="ime">
+        <br><br>
+        <label for="prezime">Prezime: </label>
+        <input type="text" id="prezime">
+        <br><br>
+        <label for="smer">Smer: </label>
+        <select id="smer">
+            <option value="AVT" selected>AVT</option>
+            <option value="EI">EI</option>
+            <option value="IS">IS</option>
+            <option value="NET">NET</option>
+            <option value="NRT">NRT</option>
+            <option value="RT">RT</option>
+        </select>
+        <br><br>
+        <label for="godinaUpisa">Godina upisa: </label>
+        <input type="number" id="godinaUpisa" min="2000" value="2020">
+        <br><br>
+        <button type="button" id="dodajStudenta">Dodaj studenta</button>
+    </form>
+</section>
+<div id="status"></div>
+</body>
+</html>

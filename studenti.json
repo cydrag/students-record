@@ -1,0 +1,137 @@
+[
+  {
+    "id": 1,
+    "ime": "Pera",
+    "prezime": "Peric",
+    "smer": "RT",
+    "godinaUpisa": 2017,
+    "polozeniPredmeti": [
+      {
+        "naziv": "Inzenjerska matematika",
+        "profesor": "Vladimir Baltic",
+        "brEspb": 7
+      },
+      {
+        "naziv": "Arhitektura i organizacija racunara 1",
+        "profesor": "Milan Mijalkovic",
+        "brEspb": 6
+      },
+      {
+        "naziv": "Objektno programiranje 1",
+        "profesor": "Perica Strbac",
+        "brEspb": 6
+      },
+      {
+        "naziv": "Elektrotehnika",
+        "profesor": "Aleksandra Dimic",
+        "brEspb": 7
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "ime": "Laza",
+    "prezime": "Lazarevic",
+    "smer": "NRT",
+    "godinaUpisa": 2018,
+    "polozeniPredmeti": [
+      {
+        "naziv": "Elektrotehnika",
+        "profesor": "Aleksandra Dimic",
+        "brEspb": 7
+      },
+      {
+        "naziv": "Algoritmi i strukture podataka",
+        "profesor": "Svetlana Strbac-Savic",
+        "brEspb": 6
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "ime": "Ivan",
+    "prezime": "Mestrovic",
+    "smer": "NET",
+    "godinaUpisa": 2020,
+    "polozeniPredmeti": [
+      {
+        "naziv": "Inzenjerska matematika",
+        "profesor": "Vladimir Baltic",
+        "brEspb": 7
+      },
+      {
+        "naziv": "Algoritmi i strukture podataka",
+        "profesor": "Svetlana Strbac",
+        "brEspb": 6
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "ime": "Tamara",
+    "prezime": "Cvetkovic",
+    "smer": "IS",
+    "godinaUpisa": 2016,
+    "polozeniPredmeti": [
+      {
+        "naziv": "Softversko Inzenjerstvo",
+        "profesor": "Goran Simic",
+        "brEspb": 6
+      },
+      {
+        "naziv": "Operativni sistemi 1",
+        "profesor": "Nemanja Macek",
+        "brEspb": 6
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "ime": "Marija",
+    "prezime": "Bogdanovic",
+    "smer": "NRT",
+    "godinaUpisa": 2017,
+    "polozeniPredmeti": []
+  },
+  {
+    "id": 6,
+    "ime": "Marko",
+    "prezime": "Markovic",
+    "smer": "NRT",
+    "godinaUpisa": 2018,
+    "polozeniPredmeti": []
+  },
+  {
+    "id": 7,
+    "ime": "Petra",
+    "prezime": "Milosevic",
+    "smer": "AVT",
+    "godinaUpisa": 2020,
+    "polozeniPredmeti": [
+      {
+        "naziv": "Matematka",
+        "profesor": "Jelica Babic",
+        "brEspb": 6
+      },
+      {
+        "naziv": "Priroda i drustvo",
+        "profesor": "Jelica Babic",
+        "brEspb": 6
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "ime": "Jovana",
+    "prezime": "Milosevic",
+    "smer": "NRT",
+    "godinaUpisa": 2009,
+    "polozeniPredmeti": [
+      {
+        "naziv": "Elektronsko poslovanje",
+        "profesor": "Marijana Markovic",
+        "brEspb": 6
+      }
+    ]
+  }
+]

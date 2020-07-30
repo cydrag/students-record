@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pocetna</title>
+    <script src="http://127.0.0.1:5000/js/jquery.js"></script>
+    <link rel="stylesheet" href="/css/navigator.css">
+    <style>
+        table {
+            margin: 10px auto 40px;
+        }
+
+        #status {
+            width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+    <script>
+
+        let student = {
+            "id": {{izmenStudent.id}},
+            "ime": "{{izmenStudent.ime}}",
+            "prezime": "{{izmenStudent.prezime}}",
+            "smer": "{{izmenStudent.smer}}",
+            "godinaUpisa": {{izmenStudent.godinaUpisa}},
+            "polozeniPredmeti": [
+            {{#each izmenStudent.polozeniPredmeti}}
+                {
+                    "naziv": "{{this.naziv}}",
+                    "profesor": "{{this.profesor}}",
+                    "brEspb": {{this.brEspb}}
+                },
+            {{/each}}
+            ]
+        };
+
+        $(function() {
+            let option = document.querySelector("#smer > option[selected]").value;
+            let smerovi = ["AVT", "EI", "IS", "NET", "NRT", "RT"];
+
+            for (let smer of smerovi) {
+                if (smer != option) {
+                    $("#smer").append(`<option value="${smer}">${smer}</option>`);
+                }
+            }
+
+            $("#sacuvaj").click(function() {
+                let ime = $("#ime").val();
+                let prezime = $("#prezime").val();
+                let smer = $("#smer").val();
+                let godinaUpisa = parseInt($("#godinaUpisa").val());
+
+                if ((ime != "") && (prezime != "") && (!isNaN(godinaUpisa))) {
+                    student.ime = ime;
+                    student.prezime = prezime;
+                    student.smer = smer;
+                    student.godinaUpisa = godinaUpisa;
+
+                    let stud = JSON.stringify(student);
+
+                    $.ajax({
+                        url: "/api/sacuvajIzmene",
+                        method: "post",
+                        data: {"student" : stud},
+                        success: function(response) {
+                            $("#status").html(response);
+                        }
+                    });
+                }
+                else {
+                    alert("Nisu popunjena sva polja");
+                }
+            });
+        });
+
+        function ukloni(elem) {
+            let predmeti = document.querySelectorAll("#listaPredmeta > li");
+
+            let selektovanElement = elem.parentNode;
+
+            $("#listaPredmeta").html("");
+
+            let sviPredmeti = student.polozeniPredmeti;
+
+            for (let i = 0; i < predmeti.length; i++) {
+                if (predmeti[i] != selektovanElement) {
+                    $("#listaPredmeta").append(predmeti[i]);
+                }
+                else {
+                    sviPredmeti.splice(i, 1);
+                }
+            }
+
+            student.polozeniPredmeti = sviPredmeti;
+        }
+
+        function dodajPredmet() {
+            let nazivPredmeta = $("#nazivPredmeta").val().trim();
+            let profesor = $("#profesor").val().trim();
+            let brEspb = $("#brEspb").val();
+
+            if ((nazivPredmeta == "") || (profesor == "") || (brEspb == "")) {
+                alert("Nisu popunjena sva polja za dodavanje predmeta");
+            }
+            else {
+                brEspb = parseInt(brEspb);
+                student['polozeniPredmeti'].push({"naziv": nazivPredmeta, "profesor": profesor, "brEspb": brEspb});
+
+                $("#listaPredmeta").append(`<li>${nazivPredmeta} (${profesor}) - ESPB: ${brEspb}
+                <button type="button" onclick="ukloni(this)">Ukloni</button></li>`);
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+<ul>
+    <li><a href="/">Pocetna</a></li>
+    <li><a href="/dodajStudenta">Dodaj studenta</a></li>
+    <li><a class="active" href="#">Izmena studenta</a></li>
+</ul>
+<section id="forma">
+
+    {{#if izmenStudent}}
+
+        <table>
+            <tr>
+                <td>ID: </td>
+                <td>{{izmenStudent.id}}</td>
+            </tr>
+            <tr>
+                <td>Ime:</td>
+                <td><input type="text" id="ime" value="{{izmenStudent.ime}}"/></td>
+            </tr>
+            <tr>
+                <td>Prezime:</td>
+                <td><input type="text" id="prezime" value="{{izmenStudent.prezime}}"/></td>
+            </tr>
+            <tr>
+                <td>Smer:</td>
+                <td>
+                    <select id="smer">
+                        <option value="{{izmenStudent.smer}}" selected>{{izmenStudent.smer}}</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Godina upisa:</td>
+                <td>
+                    <input type="number" id="godinaUpisa" min="2000" value="{{izmenStudent.godinaUpisa}}">
+                </td>
+            </tr>
+            <tr style="height: 40px;">
+                <th>Dodavanje predmeta</th>
+            </tr>
+            <tr>
+                <td>Naziv predmeta: </td>
+                <td><input type="text" id="nazivPredmeta"></td>
+            </tr>
+            <tr>
+                <td>Profesor: </td>
+                <td><input type="text" id="profesor"></td>
+            </tr>
+            <tr>
+                <td>Broj ESPB </td>
+                <td><input type="number" min="4" max="7" value="6" id="brEspb"></td>
+            </tr>
+            <tr style="text-align: center">
+                <td colspan="2"><button type="button" onclick="dodajPredmet()">Dodaj predmet</button></td>
+            </tr>
+        </table>
+        <table>
+            <caption><strong>Polozeni predmeti</strong></caption>
+            <tr>
+                <td>
+                    <ol id="listaPredmeta">
+                        {{#each izmenStudent.polozeniPredmeti}}
+                            <li>{{this.naziv}} ({{this.profesor}}) - ESPB: {{this.brEspb}} <button type="button" onclick="ukloni(this)">Ukloni</button></li>
+                        {{/each}}
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><button id="sacuvaj" type="button">Sacuvaj izmene</button></td>
+            </tr>
+        </table>
+        <div id="status"></div>
+    {{else}}
+        <h1>Pogresan ID studenta</h1>
+    {{/if}}
+
+</section>
+</body>
+</html>
+
+
